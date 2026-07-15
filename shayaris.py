@@ -1,4 +1,4 @@
-"\"\"\"Clean roast / savage shayaris — safe for public groups.
+#"\"\"\"Clean roast / savage shayaris — safe for public groups.
 
 Original file contained extremely abusive slur-content; replaced with
 non-vulgar, non-targeted, playful roast lines.
@@ -26,4 +26,3 @@ SHAYARI_LIST = [
     \"𝗧𝗨 𝗔𝗨𝗥 𝗧𝗘𝗥𝗔 𝗔𝗧𝗧𝗜𝗧𝗨𝗗𝗘 𝗗𝗢𝗡𝗢\n𝗕𝗘𝗧𝗔 𝗢𝗣𝗧𝗜𝗢𝗡𝗔𝗟 𝗛𝗢  😎🚪\",
     \"𝗠𝗘𝗥𝗔 𝗢𝗪𝗡𝗘𝗥 𝗕𝗢𝗟𝗔 𝗧𝗛𝗔 𝗞𝗨𝗖𝗛 𝗕𝗛𝗜\n𝗕𝗢𝗟 𝗠𝗔𝗚𝗔𝗥 𝗜𝗭𝗭𝗔𝗧 𝗦𝗘 𝗕𝗢𝗟  🙏👑\",
 ]
-"
