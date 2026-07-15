@@ -1,4 +1,4 @@
-"\"\"\"Entry — boot main bot, resume clones, idle.\"\"\"
+#"\"\"\"Entry — boot main bot, resume clones, idle.\"\"\"
 import asyncio
 import logging
 import sys
@@ -58,4 +58,3 @@ if __name__ == \"__main__\":
     except Exception as e:
         log.error(\"Fatal: %s\", e, exc_info=True)
         sys.exit(1)
-"
