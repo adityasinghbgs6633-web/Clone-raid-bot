@@ -1,4 +1,4 @@
-"\"\"\"Runtime state — conversation, task registry, photo cache.\"\"\"
+#"\"\"\"Runtime state — conversation, task registry, photo cache.\"\"\"
 import asyncio
 from typing import Any
 
@@ -41,5 +41,3 @@ def get_profile_photo(bot_id: int) -> str | None:
 
 # Running clone clients: bot_id -> Client
 running_clones: dict[int, Any] = {}
-"
-
