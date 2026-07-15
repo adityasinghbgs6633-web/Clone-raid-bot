@@ -1,4 +1,4 @@
-"\"\"\"Inline keyboards.\"\"\"
+#"\"\"\"Inline keyboards.\"\"\"
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
@@ -123,4 +123,4 @@ def clones_list_kb(clones: list[dict]) -> InlineKeyboardMarkup:
         )])
     rows.append([InlineKeyboardButton(\"🔙 Back\", callback_data=\"dev:home\")])
     return InlineKeyboardMarkup(rows)
-"
+
