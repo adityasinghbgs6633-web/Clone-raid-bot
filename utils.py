@@ -1,4 +1,4 @@
-"\"\"\"Helpers — join checks, photo cache, safe edits.\"\"\"
+#"\"\"\"Helpers — join checks, photo cache, safe edits.\"\"\"
 import logging
 from pyrogram import Client
 from pyrogram.enums import ChatMemberStatus
@@ -90,4 +90,3 @@ async def safe_answer(cb, text: str = \"\", alert: bool = False) -> None:
         await cb.answer(text, show_alert=alert)
     except RPCError:
         pass
-"
