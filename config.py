@@ -1,4 +1,4 @@
-"\"\"\"Central config — env loader.\"\"\"
+#"\"\"\"Central config — env loader.\"\"\"
 import os
 from dotenv import load_dotenv
 
