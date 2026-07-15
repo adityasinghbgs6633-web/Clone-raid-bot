@@ -1,4 +1,4 @@
-"#!/usr/bin/env bash
+#!/usr/bin/env bash
 # Termux / VPS auto-restart wrapper
 cd \"$(dirname \"$0\")\"
 
@@ -26,4 +26,3 @@ while true; do
     BACKOFF=$(( BACKOFF * 2 ))
     if [ \"$BACKOFF\" -gt \"$MAX_BACKOFF\" ]; then BACKOFF=$MAX_BACKOFF; fi
 done
-"
