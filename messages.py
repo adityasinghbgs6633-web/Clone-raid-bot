@@ -1,4 +1,4 @@
-"\"\"\"Stylish fonts, emojis, randomized reply variants.\"\"\"
+#"\"\"\"Stylish fonts, emojis, randomized reply variants.\"\"\"
 import random
 from .config import Config
 
@@ -153,4 +153,3 @@ HELP_PAGES = [
 
 def loading(step: int = 0) -> str:
     return f\"{SPINNER[step % len(SPINNER)]} {small_caps('processing')}...\"
-"
