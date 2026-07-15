@@ -1,4 +1,4 @@
-"\"\"\"Clone-bot manager — spins Pyrogram Client per token.\"\"\"
+#"\"\"\"Clone-bot manager — spins Pyrogram Client per token.\"\"\"
 import logging
 from pyrogram import Client
 from pyrogram.errors import AccessTokenInvalid, AccessTokenExpired
@@ -57,4 +57,3 @@ async def resume_saved_clones() -> None:
         except Exception as e:
             log.warning(\"skip clone %s: %s\", c[\"_id\"], e)
             await db.remove_clone(c[\"_id\"])
-"
