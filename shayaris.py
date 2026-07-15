@@ -1,4 +1,4 @@
-Clean roast / savage shayaris — safe for public groups.
+"\"\"\"Clean roast / savage shayaris — safe for public groups.
 
 Original file contained extremely abusive slur-content; replaced with
 non-vulgar, non-targeted, playful roast lines.
