@@ -1,8 +1,8 @@
 #"\"\"\"Clean roast / savage shayaris — safe for public groups.
 
-Original file contained extremely abusive slur-content; replaced with
-non-vulgar, non-targeted, playful roast lines.
-\"\"\"
+#Original file contained extremely abusive slur-content; replaced with
+#non-vulgar, non-targeted, playful roast lines.
+#\"\"\"
 
 SHAYARI_LIST = [
     \"𝗧𝗨 𝗕𝗔𝗔𝗧 𝗕𝗛𝗜 𝗞𝗔𝗥𝗧𝗔 𝗛𝗔𝗜 𝗔𝗨𝗥\n𝗕𝗨𝗗𝗗𝗛𝗜 𝗕𝗛𝗜 𝗟𝗢𝗔𝗗𝗜𝗡𝗚 𝗠𝗘 𝗛𝗔𝗜  💀⚡\",
