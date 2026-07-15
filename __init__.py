@@ -1,3 +1,2 @@
-"\"\"\"Clone Bot Maker package.\"\"\"
+#"\"\"\"Clone Bot Maker package.\"\"\"
 __version__ = \"2.0.0\"
-"
