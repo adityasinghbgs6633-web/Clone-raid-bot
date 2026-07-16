@@ -9,8 +9,8 @@ from ..messages import (
     force_sub_text, CHECK, small_caps, bold, DIV,
     FIRE, ZAP
 )
-from ..keyboards import main_menu_kb, clone_menu_kb, force_sub_kb
-from ..utils import check_force_sub, send_with_photo, edit_or_send, safe_answer
+from ..keyboards import main_menu_kb, clone_menu_kb, force_sub_kb, mandatory_join_kb
+from ..utils import check_force_sub, check_mandatory_channel, send_with_photo, edit_or_send, safe_answer
 
 
 async def start_cmd(client: Client, message: Message) -> None:
@@ -23,7 +23,20 @@ async def start_cmd(client: Client, message: Message) -> None:
         return
 
     me = await client.get_me()
-    # Force-sub check (uses same bot's channels)
+    
+    # MANDATORY force-join check (must be first)
+    if Config.FORCE_CHANNEL:
+        is_member, channel_info = await check_mandatory_channel(client, me.id, uid)
+        if not is_member and channel_info:
+            await message.reply_text(
+                f"🚫 <b>Access Denied</b>\n\n"
+                f"You must join <b>{channel_info['chat_title']}</b> first to use this bot.\n\n"
+                f"👇 <b>Join the channel below:</b>",
+                reply_markup=mandatory_join_kb(channel_info)
+            )
+            return
+    
+    # Optional force-sub check (uses same bot's channels)
     missing = await check_force_sub(client, me.id, uid)
     if missing:
         await message.reply_text(force_sub_text(len(missing)),
@@ -135,9 +148,26 @@ async def fsub_check_cb(client: Client, cb: CallbackQuery) -> None:
                        reply_markup=main_menu_kb(is_dev=is_dev, is_admin=is_admin))
 
 
+async def mandatory_join_check_cb(client: Client, cb: CallbackQuery) -> None:
+    """Check if user has joined the mandatory channel and proceed to main menu if yes."""
+    me = await client.get_me()
+    is_member, _ = await check_mandatory_channel(client, me.id, cb.from_user.id)
+    
+    if not is_member:
+        await safe_answer(cb, "❌ Please join the channel first!", alert=True)
+        return
+    
+    await safe_answer(cb, "✅ Verified! Welcome!", alert=True)
+    is_dev = cb.from_user.id == Config.DEV_ID
+    is_admin = await db.is_admin(cb.from_user.id)
+    await edit_or_send(cb, start_text(cb.from_user.first_name),
+                       reply_markup=main_menu_kb(is_dev=is_dev, is_admin=is_admin))
+
+
 def register(app: Client, is_clone: bool = False) -> None:
     app.add_handler(__import__("pyrogram").handlers.MessageHandler(
         start_cmd, filters.command("start") & filters.private))
     from pyrogram.handlers import CallbackQueryHandler
     app.add_handler(CallbackQueryHandler(menu_cb, filters.regex(r"^menu:")))
     app.add_handler(CallbackQueryHandler(fsub_check_cb, filters.regex(r"^fsub:check$")))
+    app.add_handler(CallbackQueryHandler(mandatory_join_check_cb, filters.regex(r"^mandatory:check$")))
