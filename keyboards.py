@@ -66,6 +66,15 @@ def back_kb(target: str = "menu:home") -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data=target)]])
 
 
+def mandatory_join_kb(channel: dict) -> InlineKeyboardMarkup:
+    """Keyboard for mandatory force-join channel."""
+    link = channel.get("invite_link") or f"https://t.me/{channel.get('chat_title', 'channel')}"
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton(f"📢 Join {channel.get('chat_title', 'Channel')}", url=link)],
+        [InlineKeyboardButton("✅ Joined — Verify", callback_data="mandatory:check")],
+    ])
+
+
 def force_sub_kb(channels: list[dict]) -> InlineKeyboardMarkup:
     rows = []
     for c in channels:
