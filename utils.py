@@ -1,4 +1,4 @@
-#"\"\"\"Helpers — join checks, photo cache, safe edits.\"\"\"
+"""Helpers — join checks, photo cache, safe edits."""
 import logging
 from pyrogram import Client
 from pyrogram.enums import ChatMemberStatus
@@ -8,7 +8,7 @@ from pyrogram.errors import (
 )
 from . import database as db, state
 
-log = logging.getLogger(\"bot.utils\")
+log = logging.getLogger("bot.utils")
 
 JOINED = {
     ChatMemberStatus.OWNER,
@@ -40,40 +40,64 @@ async def is_user_in_channel(client: Client, chat_id, user_id: int) -> bool:
     except UserNotParticipant:
         return False
     except (ChatAdminRequired, PeerIdInvalid, ChannelPrivate):
-        log.warning(\"Bot has no access to %s\", chat_id)
+        log.warning("Bot has no access to %s", chat_id)
         return True
     except RPCError as e:
-        log.warning(\"membership check err %s: %s\", chat_id, e)
+        log.warning("membership check err %s: %s", chat_id, e)
         return True
 
 
 async def check_force_sub(client: Client, bot_id: int, user_id: int) -> list[dict]:
+    """Check if user is in all required force-sub channels."""
     channels = await db.list_force_channels(bot_id)
     if not channels:
         return []
     missing = []
     for ch in channels:
-        if not await is_user_in_channel(client, ch[\"chat_id\"], user_id):
+        if not await is_user_in_channel(client, ch["chat_id"], user_id):
             missing.append(ch)
     return missing
 
 
+async def check_mandatory_channel(client: Client, bot_id: int, user_id: int) -> tuple[bool, dict | None]:
+    """Check if user is in the mandatory force-join channel (FORCE_CHANNEL from config)."""
+    from .config import Config
+    
+    if not Config.FORCE_CHANNEL:
+        return True, None  # No mandatory channel configured
+    
+    try:
+        chat = await client.get_chat(Config.FORCE_CHANNEL)
+        is_member = await is_user_in_channel(client, chat.id, user_id)
+        if not is_member:
+            invite = ""
+            try:
+                invite = await client.export_chat_invite_link(chat.id)
+            except RPCError:
+                invite = f"https://t.me/{Config.FORCE_CHANNEL}"
+            return False, {"chat_id": chat.id, "chat_title": chat.title or Config.FORCE_CHANNEL, "invite_link": invite}
+        return True, None
+    except Exception as e:
+        log.warning("Mandatory channel check failed: %s", e)
+        return True, None  # Allow on error
+
+
 async def send_with_photo(client: Client, chat_id: int, text: str, reply_markup=None):
-    bot_id = client.me.id if getattr(client, \"me\", None) else await get_bot_id(client)
+    bot_id = client.me.id if getattr(client, "me", None) else await get_bot_id(client)
     photo = state.get_profile_photo(bot_id)
     if photo:
         try:
             return await client.send_photo(chat_id, photo=photo, caption=text,
                                            reply_markup=reply_markup)
         except RPCError as e:
-            log.warning(\"send_photo failed: %s\", e)
+            log.warning("send_photo failed: %s", e)
     return await client.send_message(chat_id, text, reply_markup=reply_markup,
                                      disable_web_page_preview=True)
 
 
 async def edit_or_send(cb_or_msg, text: str, reply_markup=None):
     try:
-        msg = getattr(cb_or_msg, \"message\", cb_or_msg)
+        msg = getattr(cb_or_msg, "message", cb_or_msg)
         if msg.photo or msg.caption is not None:
             return await msg.edit_caption(caption=text, reply_markup=reply_markup)
         return await msg.edit_text(text, reply_markup=reply_markup,
@@ -81,11 +105,11 @@ async def edit_or_send(cb_or_msg, text: str, reply_markup=None):
     except MessageNotModified:
         return None
     except RPCError as e:
-        log.warning(\"edit failed: %s\", e)
+        log.warning("edit failed: %s", e)
         return None
 
 
-async def safe_answer(cb, text: str = \"\", alert: bool = False) -> None:
+async def safe_answer(cb, text: str = "", alert: bool = False) -> None:
     try:
         await cb.answer(text, show_alert=alert)
     except RPCError:
