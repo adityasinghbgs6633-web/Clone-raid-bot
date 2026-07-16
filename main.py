@@ -1,4 +1,4 @@
-#"\"\"\"Entry — boot main bot, resume clones, idle.\"\"\"
+"""Entry — boot main bot, resume clones, idle."""
 import asyncio
 import logging
 import sys
@@ -12,9 +12,9 @@ from .clone_runner import resume_saved_clones
 
 logging.basicConfig(
     level=logging.INFO,
-    format=\"%(asctime)s | %(name)s | %(levelname)s | %(message)s\",
+    format="%(asctime)s | %(name)s | %(levelname)s | %(message)s",
 )
-log = logging.getLogger(\"bot.main\")
+log = logging.getLogger("bot.main")
 
 
 async def main() -> None:
@@ -26,7 +26,7 @@ async def main() -> None:
         api_id=Config.API_ID,
         api_hash=Config.API_HASH,
         bot_token=Config.BOT_TOKEN,
-        workdir=\"./sessions\",
+        workdir="./sessions",
     )
     register_all(app, is_clone=False)
     app.owner_id = Config.DEV_ID
@@ -35,13 +35,13 @@ async def main() -> None:
     await app.start()
     await cache_bot_profile_photo(app)
     me = await app.get_me()
-    log.info(\"Main bot online: @%s (%s)\", me.username, me.id)
+    log.info("Main bot online: @%s (%s)", me.username, me.id)
 
     await resume_saved_clones()
-    log.info(\"Ready — awaiting updates.\")
+    log.info("Ready — awaiting updates.")
     await idle()
 
-    log.info(\"Shutting down...\")
+    log.info("Shutting down...")
     for bot_id, cli in list(state.running_clones.items()):
         try:
             await cli.stop()
@@ -50,11 +50,11 @@ async def main() -> None:
     await app.stop()
 
 
-if __name__ == \"__main__\":
+if __name__ == "__main__":
     try:
         asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):
         pass
     except Exception as e:
-        log.error(\"Fatal: %s\", e, exc_info=True)
+        log.error("Fatal: %s", e, exc_info=True)
         sys.exit(1)
