@@ -1,37 +1,32 @@
-"\"\"\"/stop + /resume — priority kill-switch (group=-1).\"\"\"
+"""/stop priority handler (group=-1) — cancels raid/broadcast on all clones."""
+import logging
 from pyrogram import Client, filters
 from pyrogram.handlers import MessageHandler
 from pyrogram.types import Message
 
-from .. import database as db, state
-from ..messages import STOP_MSG, RESUME_MSG
-from ..config import Config
+from .. import state, database as db
+from ..messages import STOP_MSG
 
-
-async def _is_authorized(uid: int) -> bool:
-    return uid == Config.DEV_ID or await db.is_admin(uid)
+log = logging.getLogger("bot.stop")
 
 
 async def stop_cmd(client: Client, message: Message) -> None:
-    if not await _is_authorized(message.from_user.id):
-        return
     me = await client.get_me()
     n = await state.cancel_all(me.id)
     await db.set_stop_flag(me.id, True)
-    await db.add_log(f\"/stop by {message.from_user.id} ({n} tasks)\")
-    await message.reply_text(STOP_MSG + f\"\n\n(Cancelled: {n} task(s))\")
+    await db.add_log(f"🛑 STOP triggered by {message.from_user.id} - cancelled {n} tasks")
+    await message.reply_text(STOP_MSG)
 
 
 async def resume_cmd(client: Client, message: Message) -> None:
-    if not await _is_authorized(message.from_user.id):
-        return
     me = await client.get_me()
     await db.set_stop_flag(me.id, False)
-    await db.add_log(f\"/resume by {message.from_user.id}\")
+    await db.add_log(f"▶️ RESUME triggered by {message.from_user.id}")
+    from ..messages import RESUME_MSG
     await message.reply_text(RESUME_MSG)
 
 
 def register(app: Client, is_clone: bool = False) -> None:
-    app.add_handler(MessageHandler(stop_cmd, filters.command([\"stop\"])), group=-1)
-    app.add_handler(MessageHandler(resume_cmd, filters.command([\"resume\"])), group=-1)
-"
+    # Priority: group=-1 fires BEFORE any other handler
+    app.add_handler(MessageHandler(stop_cmd, filters.command("stop")), group=-1)
+    app.add_handler(MessageHandler(resume_cmd, filters.command("resume")), group=-1)
