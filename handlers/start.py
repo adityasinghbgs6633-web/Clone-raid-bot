@@ -171,3 +171,4 @@ def register(app: Client, is_clone: bool = False) -> None:
     app.add_handler(CallbackQueryHandler(menu_cb, filters.regex(r"^menu:")))
     app.add_handler(CallbackQueryHandler(fsub_check_cb, filters.regex(r"^fsub:check$")))
     app.add_handler(CallbackQueryHandler(mandatory_join_check_cb, filters.regex(r"^mandatory:check$")))
+    
